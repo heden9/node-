@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title%></title>
+    <link rel="stylesheet" href="stylesheets/login.css"/>
+</head>
+<body>
+    <form action="/checkLogin" method="post">
+        <p>
+            <label for="">用户名</label>
+            <input type="text" name="username"/>
+        </p>
+        <p>
+            <label for="">密码</label>
+            <input type="password" name="pwd"/>
+        </p>
+        <p>
+            <input type="submit"/>
+        </p>
+    </form>
+    <script src="/javascripts/jquery-2.1.1.min.js"></script>
+    <script>
+        $(function(){
+            $('input').on('blur' ,function(){
+                if(this.value == ""){
+                    if($('.error').length == 0)
+                        $(this).after('<span class="error">请输入</span>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
