@@ -1,0 +1,45 @@
+<div id="header">
+    <div class="wrapper">
+        <div id="main-header">
+            <div id="login" class="float">
+                <%
+                    if(user){
+                        console.log(user);
+                %>
+                    欢迎,<%= user.name %>&nbsp;&nbsp;<a href="/logOut">退出</a>
+
+                <%
+                    }else{
+                %>
+                    <a href="/login">登录</a>
+                <%
+                    }
+                %>
+            </div>
+            <h1 class="float">我的小店</h1>
+            <div id="cart" class="float">
+                    <span>购物车：$
+                        <span id="total-price">0.00</span>
+                        (
+                        <span id="total-count">0</span>
+                        件)
+                    </span>
+                <!--<img src="img/cart.png" alt="">-->
+            </div>
+            <p>清空购物车</p>
+        </div>
+        <ul id="nav">
+            <li class="selected"><a href="/buy">首页</a></li>
+            <li id="makeup">
+                <a href="">美妆商城</a>
+                <div id="submenu">
+
+                </div>
+            </li>
+            <li><a href="">特卖商场</a></li>
+            <li><a href="">新品上市</a></li>
+            <li><a href="">潮人推荐</a></li>
+            <li><a href="">进口免税店</a></li>
+        </ul>
+    </div>
+</div>

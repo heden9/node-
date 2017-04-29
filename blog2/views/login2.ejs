@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/stylesheets/common.css">
+    <link rel="stylesheet" href="/stylesheets/login2.css">
+</head>
+<body>
+    <%- include header.ejs%>
+    <div id="login-container">
+        <div class="wrapper">
+            <h2>登陆</h2>
+            <form action="/checkLogin" method="post">
+                <label>
+                    <h5>用户名：</h5>
+                    <input type="text" name="username">
+                </label>
+                <label>
+                    <h5>密码：</h5>
+                    <input type="password" name="pwd">
+                </label>
+                <input type="submit" value="login" class="btn">
+                <br>
+                <a href="" id="forget">忘记密码?</a>
+            </form>
+            <div id="register">
+                <h3>没有账号？</h3>
+                <p>
+                    建立一个账号，享受更流畅的服务。期待您的加入，与我们一起变美丽。么么哒！！！ 小美妞们，快来吧。啦啦啦！！！
+                </p>
+                <a href="/regist" class="btn">新用户注册</a>
+            </div>
+        </div>
+
+    </div>
+    <div id="footer">
+        <div class="wrapper">
+            <h3>我的小店</h3>
+            <h4>Copyright © 2017.我的小店</h4>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/common.css">
+    <link rel="stylesheet" href="/stylesheets/buy.css">
+</head>
+<body>
+    <%- include header.ejs%>
+    <div id="center-page">
+        <div class="wrapper" id="content"></div>
+    </div>
+    <div id="footer">
+        <div class="wrapper">
+            <h3>我的小店</h3>
+            <h4>Copyright © 2017.我的小店</h4>
+        </div>
+    </div>
+    <script src="/javascripts/react-15.3.1/build/react.min.js"></script>
+    <script src="/javascripts/react-15.3.1/build/react-dom.min.js"></script>
+    <script src="/javascripts/react-15.3.1/browser.min.js"></script>
+    <script src="/javascripts/jquery-2.1.1.min.js"></script>
+    <script>
+        var data = '<%= data%>';
+        data = data.replace(/&#34;/g,'"').replace(/&#39;/g,'"');
+        var shopping_info = JSON.parse(data);
+        console.log(shopping_info);
+    </script>
+    <script type="text/babel">
+        var Close_btn = React.createClass({
+            destroyComponent: function(){
+                this.props.fun(this.props["data-key"]);
+            },
+            render: function(){
+                return(
+                    <button className="close-btn" onClick={this.destroyComponent}>X</button> 
+                );
+            }
+        });
+        var Shopping_list = React.createClass({
+            change: function(e, index){
+                this.props.myfun[1](e, this.props["data-key"]);
+            },
+            render: function(){
+                return(
+                    <li className="shopping-list">
+                        <div className="col-left">
+                            <img src={this.props.list_info.product_url} alt="亲，图碎了 TnT"/>
+                        </div>
+                        <Close_btn fun={this.props.myfun[0]} data-key={this.props["data-key"]}/>
+                        <div className="col-right">
+                            <h4>{this.props.list_info.product_title}</h4>
+                            <p>
+                                <h5><label>价格 </label>¥{this.props.list_info.product_price}<br/><label>库存 </label>{this.props.list_info.max_num}</h5>
+                                <label>数量 </label>
+                                <input type="number" value={this.props.list_info.product_num} min="0" max={this.props.list_info.max_num} onChange={this.change}/>
+                            </p>
+                            <p className="grey-msg">
+                                <span>优惠价格 ¥{this.props.list_info.minPrice}</span>
+                                <span style={{float:"right"}}>预计3-5天送达</span>
+                            </p>
+                        </div>
+                    </li>
+                );
+            } 
+        });
+        var Commit_menu = React.createClass({
+            Commitx: function(){
+                var data = {
+                    product_info: JSON.stringify(this.props.commit_info)
+                }
+                $.ajax({
+                    url : '/Commit',
+                    data : data,
+                    method : 'post',
+                    success: function(result){
+                        if(result == 'true'){
+                            alert("购买成功!");
+                        }
+                    },
+                    error : function(err){
+                    }
+                });
+            },
+            render: function(){
+                var msg = [];
+                var sum_price = 0;
+                this.props.commit_info.forEach(function(elem, index){
+                    sum_price += elem.product_price * elem.product_num;
+                    msg.push(<h5 key={index}>{elem.product_title} x{elem.product_num <= 0 ? 0 : elem.product_num}</h5>);
+                }.bind(this));
+                return(
+                    <div className="commit-menu">
+                        {msg}
+                        <span>{sum_price}</span>
+                        <button className="buy-btn" onClick={this.Commitx}>点击添加到购买列表</button>
+                    </div>
+                );
+            }
+        });
+        var Shopping_menu = React.createClass({
+            getInitialState: function(){
+                return{
+                    Product:[]  
+                };
+            },
+            componentWillMount: function(){
+                var temp = this.state.Product;
+                for(var i = 0, len = shopping_info.length; i < len; i ++){
+                    var elem = shopping_info[i];
+                    var data = {
+                        id: elem.id,
+                        product_title: elem.product_title,
+                        product_price: elem.product_price,
+                        minPrice: elem.minPrice,
+                        max_num: elem.max_num,
+                        product_url: elem.product_url,
+                        product_num: 0,
+                    };
+                    temp = temp.concat(data);
+                }
+                this.setState({
+                   Product: temp 
+                },function(){
+                });
+            },
+            add: function(e, index){
+                var temp = this.state.Product;
+                var val = parseInt(e.target.value);
+                if(val > parseInt(temp[index].max_num)){
+                    temp[index].product_num = temp[index].max_num;
+                }else
+                    temp[index].product_num = val;
+                this.setState({
+                    Product: temp
+                });
+            },
+            del: function(index){
+                var temp = this.state.Product;
+                temp = temp.slice(0,index).concat(temp.slice(index+1,temp.length));
+                this.setState({
+                    Product: temp 
+                });
+            },
+            render: function(){
+                var list = [];
+                this.state.Product.forEach(function(elem, index){
+                    list.push(<Shopping_list key={index} data-key={index} list_info={elem} myfun={[this.del,this.add]}/>)
+                }.bind(this));
+                return(
+                    <div>
+                        <ul className="shopping-menu">{list}</ul>
+                        <Commit_menu commit_info={this.state.Product}/>
+                    </div>
+                );
+            } 
+        });
+        ReactDOM.render(
+            <Shopping_menu/>,
+            document.getElementById("content")
+        );
+    </script>
+</body>
+</html>
